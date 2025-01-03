@@ -5,7 +5,7 @@
 1. U need to update & upgrade ``apt update && upgrade``
 2. screen -S haust
 3. Then, ``git clone https://github.com/asamarsal/haustautotx-noconflict/``
-4. ``cd haust-autotx``
+4. ``cd haustautotx-noconflict``
 5. ``pip3 install web3``
 6. ``pip3 install python-dotenv``
 7. ``python3 haus-auto-tx.py``
