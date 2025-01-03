@@ -8,7 +8,7 @@
 4. ``cd haustautotx-noconflict``
 5. ``pip3 install web3``
 6. ``pip3 install python-dotenv``
-7. ``python3 haus-auto-tx.py``
+7. ``python3 haustautotx.py``
 8. Input your private key, address, recipient address, min-max amount, min and max delay time.
 9. Ctrl + A + D
 10. Enjoy
