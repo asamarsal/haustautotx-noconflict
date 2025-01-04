@@ -112,26 +112,37 @@ def send_transaction(sender, recipient, amount, private_key):
         print(f"❌ Transaction failed: {e}")
         return None
 
-# Main Loop for Transactions
+# Main Loop for Transactions with Retry
 def main():
     for i in range(LOOP_COUNT):
-        amount = random.uniform(MIN_AMOUNT, MAX_AMOUNT)
-        print(f"\n🔄 Loop {i + 1}/{LOOP_COUNT}")
-        print(f"💸 Sending {amount:.6f} {CURRENCY_SYMBOL} to {RECIPIENT_ADDRESS}")
+        retry_count = 0
+        while retry_count < 5:  # Retry up to 5 times on error
+            amount = random.uniform(MIN_AMOUNT, MAX_AMOUNT)
+            print(f"\n🔄 Loop {i + 1}/{LOOP_COUNT}")
+            print(f"💸 Sending {amount:.6f} {CURRENCY_SYMBOL} to {RECIPIENT_ADDRESS}")
+            
+            tx_hash = send_transaction(SENDER_ADDRESS, RECIPIENT_ADDRESS, amount, PRIVATE_KEY)
+            
+            if tx_hash:
+                print(f"✅ Transaction Successful: {tx_hash}")
+                # Fetch the latest balance after the transaction
+                get_balance_from_explorer(SENDER_ADDRESS)
+                break  # Exit retry loop on success
+            else:
+                retry_count += 1
+                print(f"❌ Transaction Failed, retrying... ({retry_count}/5)")
+                # Display current balance before retrying
+                get_balance_from_explorer(SENDER_ADDRESS)
+                sleep_time = random.randint(3, 6)  # Short sleep before retrying
+                print(f"⏳ Sleeping for {sleep_time} seconds before retry...")
+                time.sleep(sleep_time)
         
-        tx_hash = send_transaction(SENDER_ADDRESS, RECIPIENT_ADDRESS, amount, PRIVATE_KEY)
+        if retry_count == 5:
+            print("❌ Transaction failed after 5 retries, moving to the next loop.")
         
-        if tx_hash:
-            print(f"✅ Transaction Successful: {tx_hash}")
-            # Fetch the latest balance after the transaction
-            get_balance_from_explorer(SENDER_ADDRESS)
-        else:
-            print("❌ Transaction Failed, stopping further execution.")
-            break
-
-        # Random sleep time between MIN_SLEEP_TIME and MAX_SLEEP_TIME
+        # Random sleep time between MIN_SLEEP_TIME and MAX_SLEEP_TIME after each loop
         sleep_time = random.randint(MIN_SLEEP_TIME, MAX_SLEEP_TIME)
-        print(f"⏳ Sleeping for {sleep_time} seconds...")
+        print(f"⏳ Sleeping for {sleep_time} seconds before next transaction...")
         time.sleep(sleep_time)
 
 # Entry Point
